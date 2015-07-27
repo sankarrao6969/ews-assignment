@@ -29,12 +29,28 @@ public class DoctorServiceImpl implements DoctorService {
         return doctors;
     }
 
+    public List<Doctor> findDoctorsByFirstName(String firstName) {
+        return doctorRepository.findByFirstNameContainingIgnoreCase(firstName);
+    }
+
+    public List<Doctor> findDoctorsByLastName(String lastName) {
+        return doctorRepository.findByLastNameContainingIgnoreCase(lastName);
+    }
+
+    public List<Doctor> findDoctorsByFirstNameAndLastName(String firstName, String lastName) {
+        return doctorRepository.findByFirstNameContainingAndLastNameContainingAllIgnoreCase(firstName, lastName);
+    }
+
     public List<Speciality> getSpecialities() {
         List<Speciality> specialities = new ArrayList<Speciality>();
         for (Speciality speciality : specialityRepository.findAll()) {
             specialities.add(speciality);
         }
         return specialities;
+    }
+
+    public List<Speciality> findSpecialities(String speciality) {
+        return specialityRepository.findBySpecialityContainingIgnoreCase(speciality);
     }
 
 }

@@ -8,6 +8,10 @@ import lk.ac.cmb.ucsc.mcs.ewa.entity.Doctor;
 
 public interface DoctorRepository extends CrudRepository<Doctor, Long> {
 
-    List<Doctor> findByLastName(String lastName);
+    List<Doctor> findByFirstNameContainingIgnoreCase(String firstName);
+
+    List<Doctor> findByLastNameContainingIgnoreCase(String lastName);
+
+    List<Doctor> findByFirstNameContainingAndLastNameContainingAllIgnoreCase(String firstName, String lastName);
 
 }
