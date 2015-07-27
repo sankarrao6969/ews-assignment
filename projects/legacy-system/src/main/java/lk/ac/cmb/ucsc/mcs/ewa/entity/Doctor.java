@@ -3,6 +3,7 @@ package lk.ac.cmb.ucsc.mcs.ewa.entity;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -23,6 +24,7 @@ public class Doctor implements Serializable {
 
     private String firstName;
     private String lastName;
+    @Column(unique = true)
     private String username;
     private String password;
     private String hospital;
