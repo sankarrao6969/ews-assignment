@@ -75,6 +75,7 @@ public class Patient implements Serializable {
         return password;
     }
 
+    // TODO: Save checksum of password
     public void setPassword(String password) {
         this.password = password;
     }
@@ -109,6 +110,14 @@ public class Patient implements Serializable {
 
     public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((getUsername() == null) ? 0 : getUsername().hashCode());
+        return result;
     }
 
     @Override

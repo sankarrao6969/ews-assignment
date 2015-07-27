@@ -19,8 +19,6 @@ import org.springframework.context.annotation.ImportResource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 
-import lk.ac.cmb.ucsc.mcs.ewa.service.NewSystemService;
-
 @Configuration
 @EnableAutoConfiguration
 @ImportResource({ "classpath:META-INF/cxf/cxf.xml" })
@@ -41,14 +39,13 @@ public class ServletInitializer extends SpringBootServletInitializer {
 
     @Bean
     public Server rsServer() {
-        return createEndpoint(new NewSystemService()).create();
+        return createEndpoint("newSystemService").create();
     }
 
-    private JAXRSServerFactoryBean createEndpoint(Object bean) {
+    private JAXRSServerFactoryBean createEndpoint(String bean) {
         Bus bus = (Bus) applicationContext.getBean(Bus.DEFAULT_BUS_ID);
         JAXRSServerFactoryBean endpoint = new JAXRSServerFactoryBean();
-        applicationContext.getAutowireCapableBeanFactory().autowireBean(bean);
-        endpoint.setServiceBean(bean);
+        endpoint.setServiceBean(applicationContext.getBean(bean));
         // Convert objects to JSON
         JacksonJaxbJsonProvider jacksonJaxbJsonProvider = new JacksonJaxbJsonProvider();
         ObjectMapper objectMapper = new ObjectMapper();
