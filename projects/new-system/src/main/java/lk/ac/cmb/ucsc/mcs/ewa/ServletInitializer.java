@@ -1,5 +1,7 @@
 package lk.ac.cmb.ucsc.mcs.ewa;
 
+import java.text.SimpleDateFormat;
+
 import org.apache.cxf.Bus;
 import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
@@ -14,7 +16,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 
-import lk.ac.cmb.ucsc.mcs.ewa.service.HelloService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
+
+import lk.ac.cmb.ucsc.mcs.ewa.service.NewSystemService;
 
 @Configuration
 @EnableAutoConfiguration
@@ -31,17 +36,29 @@ public class ServletInitializer extends SpringBootServletInitializer {
 
     @Bean
     public ServletRegistrationBean servletRegistrationBean(ApplicationContext context) {
-        return new ServletRegistrationBean(new CXFServlet(), "/services/*");
+        return new ServletRegistrationBean(new CXFServlet(), "/api/*");
     }
 
     @Bean
     public Server rsServer() {
+        return createEndpoint(new NewSystemService()).create();
+    }
+
+    private JAXRSServerFactoryBean createEndpoint(Object bean) {
         Bus bus = (Bus) applicationContext.getBean(Bus.DEFAULT_BUS_ID);
         JAXRSServerFactoryBean endpoint = new JAXRSServerFactoryBean();
-        endpoint.setServiceBean(new HelloService());
-        endpoint.setAddress("/helloservice");
+        applicationContext.getAutowireCapableBeanFactory().autowireBean(bean);
+        endpoint.setServiceBean(bean);
+        // Convert objects to JSON
+        JacksonJaxbJsonProvider jacksonJaxbJsonProvider = new JacksonJaxbJsonProvider();
+        ObjectMapper objectMapper = new ObjectMapper();
+        // Set date format for java.util.Date
+        objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
+        jacksonJaxbJsonProvider.setMapper(objectMapper);
+        endpoint.setProvider(jacksonJaxbJsonProvider);
+        endpoint.setAddress("/");
         endpoint.setBus(bus);
-        return endpoint.create();
+        return endpoint;
     }
 
 }
