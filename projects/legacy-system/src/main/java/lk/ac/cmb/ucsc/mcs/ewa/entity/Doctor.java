@@ -1,15 +1,18 @@
 package lk.ac.cmb.ucsc.mcs.ewa.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 
 @Entity
-@XmlRootElement(name = "Doctor")
 public class Doctor implements Serializable {
 
     private static final long serialVersionUID = -4349052212589556727L;
@@ -17,10 +20,20 @@ public class Doctor implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+
     private String firstName;
     private String lastName;
     private String username;
     private String password;
+    private String hospital;
+    private String email;
+    private String contactNo;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "doctor_speciality", joinColumns = {
+            @JoinColumn(name = "doctor_id", referencedColumnName = "id") }, inverseJoinColumns = {
+                    @JoinColumn(name = "speciality_id", referencedColumnName = "id") })
+    private List<Speciality> specialities;
 
     public Doctor() {
     }
@@ -70,6 +83,38 @@ public class Doctor implements Serializable {
         this.password = password;
     }
 
+    public String getHospital() {
+        return hospital;
+    }
+
+    public void setHospital(String hospital) {
+        this.hospital = hospital;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getContactNo() {
+        return contactNo;
+    }
+
+    public void setContactNo(String contactNo) {
+        this.contactNo = contactNo;
+    }
+
+    public List<Speciality> getSpecialities() {
+        return specialities;
+    }
+
+    public void setSpecialities(List<Speciality> specialities) {
+        this.specialities = specialities;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -97,7 +142,8 @@ public class Doctor implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("Doctor[id=%d, firstName='%s', lastName='%s']", id, firstName, lastName);
+        return String.format("Doctor [getId()=%s, getFirstName()=%s, getLastName()=%s, getUsername()=%s]", getId(),
+                getFirstName(), getLastName(), getUsername());
     }
 
 }
