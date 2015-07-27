@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 
+import lk.ac.cmb.ucsc.mcs.ewa.service.ChannelServiceImpl;
 import lk.ac.cmb.ucsc.mcs.ewa.service.DoctorServiceImpl;
 
 @Configuration
@@ -39,12 +40,22 @@ public class ServletInitializer extends SpringBootServletInitializer {
     // <jaxws:endpoint id="doctorServiceEndpoint"
     // implementor="lk.ac.cmb.ucsc.mcs.ewa.service.DoctorServiceImpl.DoctorServiceImpl" address="/DoctorService"/>
     public EndpointImpl doctorService() {
-        Bus bus = (Bus) applicationContext.getBean(Bus.DEFAULT_BUS_ID);
-        Object implementor = new DoctorServiceImpl();
-        applicationContext.getAutowireCapableBeanFactory().autowireBean(implementor);
-        EndpointImpl endpoint = new EndpointImpl(bus, implementor);
+        EndpointImpl endpoint = createNewEndpoint(new DoctorServiceImpl());
         endpoint.publish("/DoctorService");
         return endpoint;
     }
 
+    @Bean
+    public EndpointImpl channelService() {
+        EndpointImpl endpoint = createNewEndpoint(new ChannelServiceImpl());
+        endpoint.publish("/ChannelService");
+        return endpoint;
+    }
+
+    private EndpointImpl createNewEndpoint(Object implementor) {
+        Bus bus = (Bus) applicationContext.getBean(Bus.DEFAULT_BUS_ID);
+        applicationContext.getAutowireCapableBeanFactory().autowireBean(implementor);
+        EndpointImpl endpoint = new EndpointImpl(bus, implementor);
+        return endpoint;
+    }
 }
