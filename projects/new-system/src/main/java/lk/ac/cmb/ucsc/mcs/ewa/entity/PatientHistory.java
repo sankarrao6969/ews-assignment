@@ -82,7 +82,7 @@ public class PatientHistory implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("PatientHistory [getPatient()=%s, getChannelId()=%s]", getPatient(), getChannelId());
+        return String.format("PatientChannel [getPatient()=%s, getChannelId()=%s]", getPatient(), getChannelId());
     }
 
 }

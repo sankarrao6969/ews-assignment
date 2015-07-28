@@ -19,6 +19,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 
+import lk.ac.cmb.ucsc.mcs.ewa.dto.PatientChannel;
 import lk.ac.cmb.ucsc.mcs.ewa.entity.Patient;
 import lk.ac.cmb.ucsc.mcs.ewa.entity.PatientHistory;
 import lk.ac.cmb.ucsc.mcs.ewa.exception.PatientHistoryExistsException;
@@ -76,7 +77,10 @@ public class EwaAssignmentApplicationTests {
 
     public PatientHistory createPatientHistory(long patientId, long channelId)
             throws PatientHistoryExistsException, PatientNotFoundException {
-        return newSystemService.createPatientHistory(patientId, channelId);
+        PatientChannel patientChannel = new PatientChannel();
+        patientChannel.setPatientId(patientId);
+        patientChannel.setChannelId(channelId);
+        return newSystemService.createPatientHistory(patientChannel);
     }
 
     @Test

@@ -10,6 +10,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import lk.ac.cmb.ucsc.mcs.ewa.dto.PatientChannel;
 import lk.ac.cmb.ucsc.mcs.ewa.entity.Patient;
 import lk.ac.cmb.ucsc.mcs.ewa.entity.PatientHistory;
 import lk.ac.cmb.ucsc.mcs.ewa.exception.PatientHistoryExistsException;
@@ -34,16 +35,16 @@ public interface NewSystemService {
             @PathParam("lastName") String lastName);
 
     @POST
-    @Path("/patienthistory/{patientId}/{channelId}")
-    PatientHistory createPatientHistory(@PathParam("patientId") long patientId, @PathParam("channelId") long channelId)
+    @Path("/patients/history")
+    PatientHistory createPatientHistory(PatientChannel patientChannel)
             throws PatientHistoryExistsException, PatientNotFoundException;
 
     @GET
-    @Path("/patienthistory/{patientId}")
+    @Path("/patients/history/{patientId}")
     List<PatientHistory> findPatientHistory(@PathParam("patientId") long patientId);
 
     @GET
-    @Path("/patienthistory/{patientId}/{channelId}")
+    @Path("/patients/history/{patientId}/{channelId}")
     PatientHistory findPatientHistory(@PathParam("patientId") long patientId, @PathParam("channelId") long channelId);
 
 }

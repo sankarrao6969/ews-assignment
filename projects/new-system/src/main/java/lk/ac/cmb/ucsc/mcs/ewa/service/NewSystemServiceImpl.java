@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import lk.ac.cmb.ucsc.mcs.ewa.dto.PatientChannel;
 import lk.ac.cmb.ucsc.mcs.ewa.entity.Patient;
 import lk.ac.cmb.ucsc.mcs.ewa.entity.PatientHistory;
 import lk.ac.cmb.ucsc.mcs.ewa.entity.PatientHistoryKey;
@@ -37,9 +38,11 @@ public class NewSystemServiceImpl implements NewSystemService {
     }
 
     @Transactional
-    public PatientHistory createPatientHistory(long patientId, long channelId)
+    public PatientHistory createPatientHistory(PatientChannel patientChannel)
             throws PatientHistoryExistsException, PatientNotFoundException {
         PatientHistoryKey key = new PatientHistoryKey();
+        long patientId = patientChannel.getPatientId();
+        long channelId = patientChannel.getChannelId();
         key.setPatient(patientId);
         key.setChannelId(channelId);
         PatientHistory existingPatientHistory = patientHistoryRepository.findOne(key);
