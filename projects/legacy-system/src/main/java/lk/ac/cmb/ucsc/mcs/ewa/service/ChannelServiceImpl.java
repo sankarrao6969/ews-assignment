@@ -8,6 +8,7 @@ import java.util.List;
 import javax.jws.WebService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import lk.ac.cmb.ucsc.mcs.ewa.entity.ChannelRecord;
 import lk.ac.cmb.ucsc.mcs.ewa.entity.ChannelState;
@@ -17,6 +18,7 @@ import lk.ac.cmb.ucsc.mcs.ewa.exception.DoctorNotFoundException;
 import lk.ac.cmb.ucsc.mcs.ewa.repository.ChannelRecordRepository;
 import lk.ac.cmb.ucsc.mcs.ewa.repository.DoctorRepository;
 
+@Component("channelService")
 @WebService(endpointInterface = "lk.ac.cmb.ucsc.mcs.ewa.service.ChannelService")
 public class ChannelServiceImpl implements ChannelService {
 

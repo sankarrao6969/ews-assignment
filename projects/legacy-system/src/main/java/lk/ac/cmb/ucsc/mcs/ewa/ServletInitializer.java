@@ -1,6 +1,10 @@
 package lk.ac.cmb.ucsc.mcs.ewa;
 
+import javax.xml.ws.Endpoint;
+
 import org.apache.cxf.Bus;
+import org.apache.cxf.interceptor.LoggingInInterceptor;
+import org.apache.cxf.interceptor.LoggingOutInterceptor;
 import org.apache.cxf.jaxws.EndpointImpl;
 import org.apache.cxf.transport.servlet.CXFServlet;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +15,11 @@ import org.springframework.boot.context.web.SpringBootServletInitializer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.ImportResource;
 
-import lk.ac.cmb.ucsc.mcs.ewa.service.ChannelServiceImpl;
-import lk.ac.cmb.ucsc.mcs.ewa.service.DoctorServiceImpl;
+import lk.ac.cmb.ucsc.mcs.ewa.service.ChannelService;
+import lk.ac.cmb.ucsc.mcs.ewa.service.DoctorService;
 
 @Configuration
 @EnableAutoConfiguration
@@ -35,27 +40,33 @@ public class ServletInitializer extends SpringBootServletInitializer {
         return new ServletRegistrationBean(new CXFServlet(), "/services/*");
     }
 
+    @DependsOn("servletRegistrationBean")
     // Replaces cxf-servlet.xml
     @Bean
     // <jaxws:endpoint id="doctorServiceEndpoint"
     // implementor="lk.ac.cmb.ucsc.mcs.ewa.service.DoctorServiceImpl.DoctorServiceImpl" address="/DoctorService"/>
-    public EndpointImpl doctorService() {
-        EndpointImpl endpoint = createNewEndpoint(new DoctorServiceImpl());
+    public Endpoint doctorServiceEndpoint(DoctorService doctorService) {
+        Endpoint endpoint = createNewEndpoint(doctorService);
         endpoint.publish("/DoctorService");
         return endpoint;
     }
 
     @Bean
-    public EndpointImpl channelService() {
-        EndpointImpl endpoint = createNewEndpoint(new ChannelServiceImpl());
+    public Endpoint channelServiceEndpoint(ChannelService channelService) {
+        Endpoint endpoint = createNewEndpoint(channelService);
         endpoint.publish("/ChannelService");
         return endpoint;
     }
 
-    private EndpointImpl createNewEndpoint(Object implementor) {
+    private Endpoint createNewEndpoint(Object implementor) {
         Bus bus = (Bus) applicationContext.getBean(Bus.DEFAULT_BUS_ID);
-        applicationContext.getAutowireCapableBeanFactory().autowireBean(implementor);
         EndpointImpl endpoint = new EndpointImpl(bus, implementor);
+        LoggingInInterceptor loggingInInterceptor = new LoggingInInterceptor();
+        loggingInInterceptor.setPrettyLogging(true);
+        LoggingOutInterceptor loggingOutInterceptor = new LoggingOutInterceptor();
+        loggingOutInterceptor.setPrettyLogging(true);
+        endpoint.getInInterceptors().add(loggingInInterceptor);
+        endpoint.getOutInterceptors().add(loggingOutInterceptor);
         return endpoint;
     }
 }
