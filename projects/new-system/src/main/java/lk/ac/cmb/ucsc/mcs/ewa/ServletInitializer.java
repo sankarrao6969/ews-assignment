@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.endpoint.Server;
+import org.apache.cxf.interceptor.LoggingInInterceptor;
+import org.apache.cxf.interceptor.LoggingOutInterceptor;
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
 import org.apache.cxf.transport.servlet.CXFServlet;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +41,12 @@ public class ServletInitializer extends SpringBootServletInitializer {
 
     @Bean
     public Server rsServer() {
-        return createEndpoint("newSystemService").create();
+        Server server = createEndpoint("newSystemService").create();
+        LoggingInInterceptor loggingInInterceptor = new LoggingInInterceptor();
+        LoggingOutInterceptor loggingOutInterceptor = new LoggingOutInterceptor();
+        server.getEndpoint().getInInterceptors().add(loggingInInterceptor);
+        server.getEndpoint().getOutInterceptors().add(loggingOutInterceptor);
+        return server;
     }
 
     private JAXRSServerFactoryBean createEndpoint(String bean) {
