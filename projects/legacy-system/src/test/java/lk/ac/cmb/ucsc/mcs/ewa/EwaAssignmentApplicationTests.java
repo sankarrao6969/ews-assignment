@@ -87,6 +87,14 @@ public class EwaAssignmentApplicationTests {
     }
 
     @Test
+    public void testFindDoctorsBySpeciality() {
+        long specialityId = 1;
+        List<Doctor> doctors = doctorService.findDoctorsBySpeciality(specialityId);
+        assertTrue(!doctors.isEmpty());
+        assertTrue("There is only one result", doctors.size() == 1);
+    }
+
+    @Test
     public void testGetSpecialities() {
         List<Speciality> specialities = doctorService.getSpecialities();
         assertTrue(!specialities.isEmpty());

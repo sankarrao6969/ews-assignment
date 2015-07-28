@@ -43,6 +43,10 @@ public class DoctorServiceImpl implements DoctorService {
         return doctorRepository.findByFirstNameContainingAndLastNameContainingAllIgnoreCase(firstName, lastName);
     }
 
+    public List<Doctor> findDoctorsBySpeciality(long specialityId) {
+        return doctorRepository.findBySpeciality(specialityId);
+    }
+
     public List<Speciality> getSpecialities() {
         List<Speciality> specialities = new ArrayList<Speciality>();
         for (Speciality speciality : specialityRepository.findAll()) {

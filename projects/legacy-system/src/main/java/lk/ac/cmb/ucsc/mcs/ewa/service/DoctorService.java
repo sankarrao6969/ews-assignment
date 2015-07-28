@@ -20,6 +20,8 @@ public interface DoctorService {
     List<Doctor> findDoctorsByFirstNameAndLastName(@WebParam(name = "firstName") String firstName,
             @WebParam(name = "lastName") String lastName);
 
+    List<Doctor> findDoctorsBySpeciality(@WebParam(name = "specialityId") long specialityId);
+
     List<Speciality> getSpecialities();
 
     List<Speciality> findSpecialities(@WebParam(name = "speciality") String speciality);
