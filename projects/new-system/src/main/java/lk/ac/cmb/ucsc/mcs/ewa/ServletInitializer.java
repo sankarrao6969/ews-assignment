@@ -21,6 +21,8 @@ import org.springframework.context.annotation.ImportResource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 
+import lk.ac.cmb.ucsc.mcs.ewa.service.PatientService;
+
 @Configuration
 @EnableAutoConfiguration
 @ImportResource({ "classpath:META-INF/cxf/cxf.xml" })
@@ -40,8 +42,8 @@ public class ServletInitializer extends SpringBootServletInitializer {
     }
 
     @Bean
-    public Server rsServer() {
-        Server server = createEndpoint("newSystemService").create();
+    public Server rsServer(PatientService patientService) {
+        Server server = createEndpoint(patientService).create();
         LoggingInInterceptor loggingInInterceptor = new LoggingInInterceptor();
         LoggingOutInterceptor loggingOutInterceptor = new LoggingOutInterceptor();
         server.getEndpoint().getInInterceptors().add(loggingInInterceptor);
@@ -49,10 +51,10 @@ public class ServletInitializer extends SpringBootServletInitializer {
         return server;
     }
 
-    private JAXRSServerFactoryBean createEndpoint(String bean) {
+    private JAXRSServerFactoryBean createEndpoint(PatientService patientService) {
         Bus bus = (Bus) applicationContext.getBean(Bus.DEFAULT_BUS_ID);
         JAXRSServerFactoryBean endpoint = new JAXRSServerFactoryBean();
-        endpoint.setServiceBean(applicationContext.getBean(bean));
+        endpoint.setServiceBean(patientService);
         // Convert objects to JSON
         JacksonJaxbJsonProvider jacksonJaxbJsonProvider = new JacksonJaxbJsonProvider();
         ObjectMapper objectMapper = new ObjectMapper();

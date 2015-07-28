@@ -19,7 +19,7 @@ import lk.ac.cmb.ucsc.mcs.ewa.exception.PatientNotFoundException;
 @Path("/")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public interface NewSystemService {
+public interface PatientService {
 
     @GET
     @Path("/patients/{patientId}")

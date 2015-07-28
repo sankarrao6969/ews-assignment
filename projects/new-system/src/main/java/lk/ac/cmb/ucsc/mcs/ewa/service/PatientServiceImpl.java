@@ -16,8 +16,8 @@ import lk.ac.cmb.ucsc.mcs.ewa.exception.PatientNotFoundException;
 import lk.ac.cmb.ucsc.mcs.ewa.repository.PatientHistoryRepository;
 import lk.ac.cmb.ucsc.mcs.ewa.repository.PatientRepository;
 
-@Component("newSystemService")
-public class NewSystemServiceImpl implements NewSystemService {
+@Component("patientService")
+public class PatientServiceImpl implements PatientService {
 
     @Autowired
     private PatientRepository patientRepository;

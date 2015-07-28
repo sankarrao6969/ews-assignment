@@ -24,7 +24,7 @@ import lk.ac.cmb.ucsc.mcs.ewa.entity.Patient;
 import lk.ac.cmb.ucsc.mcs.ewa.entity.PatientHistory;
 import lk.ac.cmb.ucsc.mcs.ewa.exception.PatientHistoryExistsException;
 import lk.ac.cmb.ucsc.mcs.ewa.exception.PatientNotFoundException;
-import lk.ac.cmb.ucsc.mcs.ewa.service.NewSystemService;
+import lk.ac.cmb.ucsc.mcs.ewa.service.PatientService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = EwaAssignmentApplication.class)
@@ -32,7 +32,7 @@ import lk.ac.cmb.ucsc.mcs.ewa.service.NewSystemService;
 @IntegrationTest("server.port=0")
 public class EwaAssignmentApplicationTests {
 
-    private NewSystemService newSystemService;
+    private PatientService patientService;
 
     @Value("${local.server.port}")
     private int serverPort;
@@ -43,12 +43,12 @@ public class EwaAssignmentApplicationTests {
         List<Object> providers = new ArrayList<Object>();
         JacksonJaxbJsonProvider jacksonJaxbJsonProvider = new JacksonJaxbJsonProvider();
         providers.add(jacksonJaxbJsonProvider);
-        newSystemService = JAXRSClientFactory.create(servicesUrl, NewSystemService.class, providers, true);
+        patientService = JAXRSClientFactory.create(servicesUrl, PatientService.class, providers, true);
     }
 
     @Test
     public void testFindPatient() {
-        Patient patient = newSystemService.findPatient(1);
+        Patient patient = patientService.findPatient(1);
         assertNotNull(patient);
         assertTrue("Name matches", patient.getFirstName().equalsIgnoreCase("isuru"));
     }
@@ -56,7 +56,7 @@ public class EwaAssignmentApplicationTests {
     @Test
     public void testFindPatientsByFirstName() {
         String firstName = "isuru";
-        List<Patient> patients = newSystemService.findPatientsByFirstName(firstName);
+        List<Patient> patients = patientService.findPatientsByFirstName(firstName);
         assertTrue(!patients.isEmpty());
         assertTrue("There is only one result", patients.size() == 1);
         assertTrue("Name matches", patients.get(0).getFirstName().equalsIgnoreCase(firstName));
@@ -65,7 +65,7 @@ public class EwaAssignmentApplicationTests {
     @Test
     public void testFindPatientsByLastName() {
         String lastName = "perera";
-        List<Patient> patients = newSystemService.findPatientsByLastName(lastName);
+        List<Patient> patients = patientService.findPatientsByLastName(lastName);
         assertTrue(!patients.isEmpty());
         assertTrue("There is only one result", patients.size() == 1);
         assertTrue("Name matches", patients.get(0).getLastName().equalsIgnoreCase(lastName));
@@ -75,7 +75,7 @@ public class EwaAssignmentApplicationTests {
     public void testFindPatientsByFirstNameAndLastName() {
         String firstName = "isuru";
         String lastName = "perera";
-        List<Patient> patients = newSystemService.findPatientsByFirstNameAndLastName(firstName, lastName);
+        List<Patient> patients = patientService.findPatientsByFirstNameAndLastName(firstName, lastName);
         assertTrue(!patients.isEmpty());
         assertTrue("There is only one result", patients.size() == 1);
         assertTrue("First Name matches", patients.get(0).getFirstName().equalsIgnoreCase(firstName));
@@ -87,7 +87,7 @@ public class EwaAssignmentApplicationTests {
         PatientChannel patientChannel = new PatientChannel();
         patientChannel.setPatientId(patientId);
         patientChannel.setChannelId(channelId);
-        return newSystemService.createPatientHistory(patientChannel);
+        return patientService.createPatientHistory(patientChannel);
     }
 
     @Test
@@ -105,7 +105,7 @@ public class EwaAssignmentApplicationTests {
     @Test
     public void testFindPatientHistoryList() {
         try {
-            List<PatientHistory> patientHistoryList = newSystemService
+            List<PatientHistory> patientHistoryList = patientService
                     .findPatientHistory(createPatientHistory(1, 2).getPatient().getId());
             assertTrue("Found results", patientHistoryList.size() >= 1);
         } catch (PatientHistoryExistsException e) {
@@ -120,7 +120,7 @@ public class EwaAssignmentApplicationTests {
     public void testFindPatientHistory() {
         try {
             PatientHistory patientHistory = createPatientHistory(1, 3);
-            assertTrue(patientHistory.equals(newSystemService.findPatientHistory(patientHistory.getPatient().getId(),
+            assertTrue(patientHistory.equals(patientService.findPatientHistory(patientHistory.getPatient().getId(),
                     patientHistory.getChannelId())));
         } catch (PatientHistoryExistsException e) {
             fail(e.getMessage());
