@@ -22,6 +22,10 @@ import lk.ac.cmb.ucsc.mcs.ewa.exception.PatientNotFoundException;
 public interface NewSystemService {
 
     @GET
+    @Path("/patients/{patientId}")
+    Patient findPatient(@PathParam("patientId") long patientId);
+
+    @GET
     @Path("/patients/firstname/{name}")
     List<Patient> findPatientsByFirstName(@PathParam("name") String firstName);
 

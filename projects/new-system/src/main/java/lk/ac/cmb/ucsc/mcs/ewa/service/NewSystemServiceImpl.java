@@ -25,6 +25,10 @@ public class NewSystemServiceImpl implements NewSystemService {
     @Autowired
     private PatientHistoryRepository patientHistoryRepository;
 
+    public Patient findPatient(long patientId) {
+        return patientRepository.findOne(patientId);
+    }
+
     public List<Patient> findPatientsByFirstName(String firstName) {
         return patientRepository.findByFirstNameContainingIgnoreCase(firstName);
     }

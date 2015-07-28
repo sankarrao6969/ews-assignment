@@ -47,6 +47,13 @@ public class EwaAssignmentApplicationTests {
     }
 
     @Test
+    public void testFindPatient() {
+        Patient patient = newSystemService.findPatient(1);
+        assertNotNull(patient);
+        assertTrue("Name matches", patient.getFirstName().equalsIgnoreCase("isuru"));
+    }
+
+    @Test
     public void testFindPatientsByFirstName() {
         String firstName = "isuru";
         List<Patient> patients = newSystemService.findPatientsByFirstName(firstName);
