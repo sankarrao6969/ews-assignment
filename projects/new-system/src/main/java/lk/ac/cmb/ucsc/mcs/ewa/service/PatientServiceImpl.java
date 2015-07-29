@@ -15,6 +15,7 @@ import lk.ac.cmb.ucsc.mcs.ewa.entity.Patient;
 import lk.ac.cmb.ucsc.mcs.ewa.entity.PatientHistory;
 import lk.ac.cmb.ucsc.mcs.ewa.entity.PatientHistoryKey;
 import lk.ac.cmb.ucsc.mcs.ewa.exception.PatientHistoryExistsException;
+import lk.ac.cmb.ucsc.mcs.ewa.exception.PatientHistoryNotFoundException;
 import lk.ac.cmb.ucsc.mcs.ewa.exception.PatientNotFoundException;
 import lk.ac.cmb.ucsc.mcs.ewa.repository.PatientHistoryRepository;
 import lk.ac.cmb.ucsc.mcs.ewa.repository.PatientRepository;
@@ -90,6 +91,24 @@ public class PatientServiceImpl implements PatientService {
         key.setPatient(patientId);
         key.setChannelId(channelId);
         return patientHistoryRepository.findOne(key);
+    }
+
+    @Transactional
+    public PatientHistory updatePatientHistoryComments(long patientId, long channelId, String comments)
+            throws PatientHistoryNotFoundException {
+        PatientHistoryKey key = new PatientHistoryKey();
+        key.setPatient(patientId);
+        key.setChannelId(channelId);
+        PatientHistory existingPatientHistory = patientHistoryRepository.findOne(key);
+
+        if (existingPatientHistory == null) {
+            throw new PatientHistoryNotFoundException(String.format(
+                    "Patient History record is not available for patient %d and channel ID %d", patientId, channelId));
+        }
+
+        existingPatientHistory.setComments(comments);
+
+        return patientHistoryRepository.save(existingPatientHistory);
     }
 
 }

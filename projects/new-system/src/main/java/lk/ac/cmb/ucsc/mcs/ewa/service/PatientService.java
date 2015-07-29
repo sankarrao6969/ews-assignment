@@ -5,6 +5,7 @@ import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -16,6 +17,7 @@ import lk.ac.cmb.ucsc.mcs.ewa.dto.PatientChannel;
 import lk.ac.cmb.ucsc.mcs.ewa.entity.Patient;
 import lk.ac.cmb.ucsc.mcs.ewa.entity.PatientHistory;
 import lk.ac.cmb.ucsc.mcs.ewa.exception.PatientHistoryExistsException;
+import lk.ac.cmb.ucsc.mcs.ewa.exception.PatientHistoryNotFoundException;
 import lk.ac.cmb.ucsc.mcs.ewa.exception.PatientNotFoundException;
 
 @Path("/")
@@ -56,5 +58,10 @@ public interface PatientService {
     @GET
     @Path("/patients/history/{patientId}/{channelId}")
     PatientHistory findPatientHistory(@PathParam("patientId") long patientId, @PathParam("channelId") long channelId);
+
+    @PUT
+    @Path("/patients/history/{patientId}/{channelId}/comments")
+    PatientHistory updatePatientHistoryComments(@PathParam("patientId") long patientId,
+            @PathParam("channelId") long channelId, String comments) throws PatientHistoryNotFoundException;
 
 }

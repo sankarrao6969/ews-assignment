@@ -26,6 +26,7 @@ import lk.ac.cmb.ucsc.mcs.ewa.dto.PatientChannel;
 import lk.ac.cmb.ucsc.mcs.ewa.entity.Patient;
 import lk.ac.cmb.ucsc.mcs.ewa.entity.PatientHistory;
 import lk.ac.cmb.ucsc.mcs.ewa.exception.PatientHistoryExistsException;
+import lk.ac.cmb.ucsc.mcs.ewa.exception.PatientHistoryNotFoundException;
 import lk.ac.cmb.ucsc.mcs.ewa.exception.PatientNotFoundException;
 import lk.ac.cmb.ucsc.mcs.ewa.service.PatientService;
 
@@ -139,6 +140,22 @@ public class EwaAssignmentApplicationTests {
         } catch (PatientHistoryExistsException e) {
             fail(e.getMessage());
         } catch (PatientNotFoundException e) {
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testUpdatePatientHistoryComment() {
+        try {
+            String comments = "Good";
+            createPatientHistory(1, 4);
+            PatientHistory patientHistory = patientService.updatePatientHistoryComments(1, 4, comments);
+            assertTrue("Comment updated", comments.equals(patientHistory.getComments()));
+        } catch (PatientHistoryExistsException e) {
+            fail(e.getMessage());
+        } catch (PatientNotFoundException e) {
+            fail(e.getMessage());
+        } catch (PatientHistoryNotFoundException e) {
             fail(e.getMessage());
         }
     }
