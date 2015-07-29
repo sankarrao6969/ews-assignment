@@ -14,6 +14,7 @@ import lk.ac.cmb.ucsc.mcs.ewa.entity.ChannelRecord;
 import lk.ac.cmb.ucsc.mcs.ewa.entity.ChannelState;
 import lk.ac.cmb.ucsc.mcs.ewa.entity.Doctor;
 import lk.ac.cmb.ucsc.mcs.ewa.exception.ChannelRecordExistsException;
+import lk.ac.cmb.ucsc.mcs.ewa.exception.ChannelRecordNotFoundException;
 import lk.ac.cmb.ucsc.mcs.ewa.exception.DoctorNotFoundException;
 import lk.ac.cmb.ucsc.mcs.ewa.repository.ChannelRecordRepository;
 import lk.ac.cmb.ucsc.mcs.ewa.repository.DoctorRepository;
@@ -100,6 +101,15 @@ public class ChannelServiceImpl implements ChannelService {
         }
 
         return channelRecordRepository.findByDoctorAndChannelDateTimeBetween(doctor, startDate, endDate);
+    }
+
+    public ChannelRecord findChannelRecord(long channelId) throws ChannelRecordNotFoundException {
+        ChannelRecord channelRecord = channelRecordRepository.findOne(channelId);
+        if (channelRecord == null) {
+            throw new ChannelRecordNotFoundException(
+                    String.format("A Channel Record with ID %d is not available", channelId));
+        }
+        return channelRecord;
     }
 
 }

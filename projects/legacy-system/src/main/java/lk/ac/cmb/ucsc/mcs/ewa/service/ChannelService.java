@@ -7,6 +7,7 @@ import javax.jws.WebService;
 
 import lk.ac.cmb.ucsc.mcs.ewa.entity.ChannelRecord;
 import lk.ac.cmb.ucsc.mcs.ewa.exception.ChannelRecordExistsException;
+import lk.ac.cmb.ucsc.mcs.ewa.exception.ChannelRecordNotFoundException;
 import lk.ac.cmb.ucsc.mcs.ewa.exception.DoctorNotFoundException;
 
 @WebService
@@ -37,5 +38,12 @@ public interface ChannelService {
      */
     List<ChannelRecord> findChannelRecordsOfDoctorOnDate(@WebParam(name = "doctorId") long doctorId,
             @WebParam(name = "date") String date) throws DoctorNotFoundException;
+
+    /**
+     * @param channelId The channel Id
+     * @return A Channel Record
+     * @throws ChannelRecordNotFoundException if there is no channel record for the given id.
+     */
+    ChannelRecord findChannelRecord(long channelId) throws ChannelRecordNotFoundException;
 
 }

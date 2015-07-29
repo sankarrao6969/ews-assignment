@@ -19,9 +19,10 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import lk.ac.cmb.ucsc.mcs.ewa.entity.ChannelRecord;
 import lk.ac.cmb.ucsc.mcs.ewa.entity.Doctor;
 import lk.ac.cmb.ucsc.mcs.ewa.entity.Speciality;
-import lk.ac.cmb.ucsc.mcs.ewa.exception.ChannelRecordExistsException;
-import lk.ac.cmb.ucsc.mcs.ewa.exception.DoctorNotFoundException;
 import lk.ac.cmb.ucsc.mcs.ewa.exception.AuthenticationException;
+import lk.ac.cmb.ucsc.mcs.ewa.exception.ChannelRecordExistsException;
+import lk.ac.cmb.ucsc.mcs.ewa.exception.ChannelRecordNotFoundException;
+import lk.ac.cmb.ucsc.mcs.ewa.exception.DoctorNotFoundException;
 import lk.ac.cmb.ucsc.mcs.ewa.service.ChannelService;
 import lk.ac.cmb.ucsc.mcs.ewa.service.DoctorService;
 
@@ -156,6 +157,33 @@ public class EwaAssignmentApplicationTests {
             List<ChannelRecord> channelRecords = channelService.findChannelRecordsOfDoctorOnDate(doctorId, date);
             assertTrue("There is one channel record", channelRecords.size() == 1);
         } catch (DoctorNotFoundException e) {
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testFindChannelRecord() {
+        long doctorId = 1;
+        String patientName = "Isuru";
+        String date = "2015-07-29";
+        String time = "18:30";
+
+        long channelId = 0;
+
+        try {
+            ChannelRecord channelRecord = channelService.createChannelRecord(doctorId, patientName, date, time);
+            assertNotNull("Channel Record Created", channelRecord);
+            channelId = channelRecord.getId();
+        } catch (ChannelRecordExistsException e) {
+            fail(e.getMessage());
+        } catch (DoctorNotFoundException e) {
+            fail(e.getMessage());
+        }
+
+        try {
+            ChannelRecord channelRecord = channelService.findChannelRecord(channelId);
+            assertNotNull("Channel record found", channelRecord);
+        } catch (ChannelRecordNotFoundException e) {
             fail(e.getMessage());
         }
     }
