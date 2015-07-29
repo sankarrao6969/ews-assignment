@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api xmlns="http://ws.apache.org/ns/synapse" name="AuthenticateAPI" context="/authenticate">
+    <resource methods="POST">
+        <!-- The inSequence handles the request flow -->
+        <inSequence>
+            <!-- Get credentials and type -->
+            <property name="username" expression="json-eval($.username)" />
+            <property name="password" expression="json-eval($.password)" />
+
+            <switch source="json-eval($.type)">
+                <!-- Authenticate doctor from legacy system -->
+                <case regex="doctor">
+                    <!-- Construct the payload required for authenticating doctors from the ChannelService in legacy system -->
+                    <payloadFactory media-type="xml">
+                        <format>
+                            <ser:authenticate xmlns:ser="http://service.ewa.mcs.ucsc.cmb.ac.lk/">
+                                <username xmlns="">$1</username>
+                                <password xmlns="">$2</password>
+                            </ser:authenticate>
+                        </format>
+                        <args>
+                            <arg expression="get-property('username')" />
+                            <arg expression="get-property('password')" />
+                        </args>
+                    </payloadFactory>
+                    <header name="Action" value="" />
+                    <!-- Call the ChannelService to authenticate -->
+                    <send>
+                        <endpoint>
+                            <address uri="http://localhost:8686/services/DoctorService" format="soap11" />
+                        </endpoint>
+                    </send>
+                </case>
+                <!-- Default: Authenticate patient from the new system -->
+                <default>
+                    <!-- Construct the json payload required for authenticating the patient -->
+                    <payloadFactory media-type="json">
+                        <format>{"username":"$1","password":"$2"}</format>
+                        <args>
+                            <arg expression="get-property('username')" />
+                            <arg expression="get-property('password')" />
+                        </args>
+                    </payloadFactory>
+                    <property name="messageType" value="application/json" scope="axis2" type="STRING" />
+                    <!-- Call the patient authenicate service -->
+                    <send>
+                        <endpoint>
+                            <http method="POST" uri-template="http://localhost:8787/api/patients/authenticate" />
+                        </endpoint>
+                    </send>
+                </default>
+            </switch>
+
+        </inSequence>
+        <!-- The outSequence handles the response flow -->
+        <outSequence>
+            <log>
+                <property name="HTTP Status Code" expression="get-property('axis2', 'HTTP_SC')" />
+            </log>
+            <!-- Check the status code of the response to see whether authentication is successful -->
+            <switch source="get-property('axis2', 'HTTP_SC')">
+                <case regex="200">
+                    <payloadFactory media-type="json">
+                        <format>{"Message":"Success"}</format>
+                    </payloadFactory>
+                </case>
+                <case regex="401">
+                    <!-- Construct the final Response we are going to send back to the front end -->
+                    <payloadFactory media-type="json">
+                        <format>{"Message":"Invalid Credentials"}</format>
+                    </payloadFactory>
+                </case>
+                <case regex="500">
+                    <property name="HTTP_SC" value="401" scope="axis2" />
+                </case>
+            </switch>
+
+            <property name="messageType" value="application/json" scope="axis2" />
+            <!-- Send the final response to the front end -->
+            <send />
+        </outSequence>
+    </resource>
+</api>
