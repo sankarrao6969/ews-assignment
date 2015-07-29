@@ -21,7 +21,7 @@ import lk.ac.cmb.ucsc.mcs.ewa.entity.Doctor;
 import lk.ac.cmb.ucsc.mcs.ewa.entity.Speciality;
 import lk.ac.cmb.ucsc.mcs.ewa.exception.ChannelRecordExistsException;
 import lk.ac.cmb.ucsc.mcs.ewa.exception.DoctorNotFoundException;
-import lk.ac.cmb.ucsc.mcs.ewa.exception.LoginException;
+import lk.ac.cmb.ucsc.mcs.ewa.exception.AuthenticationException;
 import lk.ac.cmb.ucsc.mcs.ewa.service.ChannelService;
 import lk.ac.cmb.ucsc.mcs.ewa.service.DoctorService;
 
@@ -53,12 +53,12 @@ public class EwaAssignmentApplicationTests {
     }
 
     @Test
-    public void testDoctorLogin() {
+    public void testDoctorAuthenticate() {
         String username = "ms123";
         String password = "123";
         try {
-            doctorService.login(username, password);
-        } catch (LoginException e) {
+            doctorService.authenticate(username, password);
+        } catch (AuthenticationException e) {
             fail(e.getMessage());
         }
     }

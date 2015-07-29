@@ -50,13 +50,13 @@ public class EwaAssignmentApplicationTests {
     }
 
     @Test
-    public void testPatientLogin() {
+    public void testPatientAuthenticate() {
         Credentials credentials = new Credentials();
         String username = "ip123";
         String password = "123";
         credentials.setUsername(username);
         credentials.setPassword(password);
-        Response response = patientService.login(credentials);
+        Response response = patientService.authenticate(credentials);
         assertTrue("Login successful", response.getStatus() == 200);
     }
 

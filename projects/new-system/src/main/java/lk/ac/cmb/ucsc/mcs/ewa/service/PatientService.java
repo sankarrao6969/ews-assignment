@@ -24,8 +24,8 @@ import lk.ac.cmb.ucsc.mcs.ewa.exception.PatientNotFoundException;
 public interface PatientService {
 
     @POST
-    @Path("/patients/login")
-    Response login(Credentials credentials);
+    @Path("/patients/authenticate")
+    Response authenticate(Credentials credentials);
 
     @GET
     @Path("/patients/{patientId}")

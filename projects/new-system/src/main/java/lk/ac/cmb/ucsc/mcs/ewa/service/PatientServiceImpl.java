@@ -28,7 +28,7 @@ public class PatientServiceImpl implements PatientService {
     @Autowired
     private PatientHistoryRepository patientHistoryRepository;
 
-    public Response login(Credentials credentials) {
+    public Response authenticate(Credentials credentials) {
         Patient patient = patientRepository.findByUsername(credentials.getUsername());
         if (patient == null || !credentials.getPassword().equals(patient.getPassword())) {
             throw new WebApplicationException(Response.Status.UNAUTHORIZED);
