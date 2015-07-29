@@ -7,9 +7,13 @@ import javax.jws.WebService;
 
 import lk.ac.cmb.ucsc.mcs.ewa.entity.Doctor;
 import lk.ac.cmb.ucsc.mcs.ewa.entity.Speciality;
+import lk.ac.cmb.ucsc.mcs.ewa.exception.LoginException;
 
 @WebService
 public interface DoctorService {
+
+    void login(@WebParam(name = "username") String username, @WebParam(name = "password") String password)
+            throws LoginException;
 
     List<Doctor> getDoctors();
 

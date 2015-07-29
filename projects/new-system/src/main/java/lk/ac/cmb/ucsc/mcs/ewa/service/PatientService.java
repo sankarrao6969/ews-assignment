@@ -9,7 +9,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
+import lk.ac.cmb.ucsc.mcs.ewa.dto.Credentials;
 import lk.ac.cmb.ucsc.mcs.ewa.dto.PatientChannel;
 import lk.ac.cmb.ucsc.mcs.ewa.entity.Patient;
 import lk.ac.cmb.ucsc.mcs.ewa.entity.PatientHistory;
@@ -20,6 +22,10 @@ import lk.ac.cmb.ucsc.mcs.ewa.exception.PatientNotFoundException;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public interface PatientService {
+
+    @POST
+    @Path("/patients/login")
+    Response login(Credentials credentials);
 
     @GET
     @Path("/patients/{patientId}")

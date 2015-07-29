@@ -7,6 +7,8 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ws.rs.core.Response;
+
 import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,6 +21,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 
+import lk.ac.cmb.ucsc.mcs.ewa.dto.Credentials;
 import lk.ac.cmb.ucsc.mcs.ewa.dto.PatientChannel;
 import lk.ac.cmb.ucsc.mcs.ewa.entity.Patient;
 import lk.ac.cmb.ucsc.mcs.ewa.entity.PatientHistory;
@@ -44,6 +47,17 @@ public class EwaAssignmentApplicationTests {
         JacksonJaxbJsonProvider jacksonJaxbJsonProvider = new JacksonJaxbJsonProvider();
         providers.add(jacksonJaxbJsonProvider);
         patientService = JAXRSClientFactory.create(servicesUrl, PatientService.class, providers, true);
+    }
+
+    @Test
+    public void testPatientLogin() {
+        Credentials credentials = new Credentials();
+        String username = "ip123";
+        String password = "123";
+        credentials.setUsername(username);
+        credentials.setPassword(password);
+        Response response = patientService.login(credentials);
+        assertTrue("Login successful", response.getStatus() == 200);
     }
 
     @Test

@@ -3,10 +3,13 @@ package lk.ac.cmb.ucsc.mcs.ewa.service;
 import java.util.List;
 
 import javax.transaction.Transactional;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import lk.ac.cmb.ucsc.mcs.ewa.dto.Credentials;
 import lk.ac.cmb.ucsc.mcs.ewa.dto.PatientChannel;
 import lk.ac.cmb.ucsc.mcs.ewa.entity.Patient;
 import lk.ac.cmb.ucsc.mcs.ewa.entity.PatientHistory;
@@ -24,6 +27,14 @@ public class PatientServiceImpl implements PatientService {
 
     @Autowired
     private PatientHistoryRepository patientHistoryRepository;
+
+    public Response login(Credentials credentials) {
+        Patient patient = patientRepository.findByUsername(credentials.getUsername());
+        if (patient == null || !credentials.getPassword().equals(patient.getPassword())) {
+            throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+        }
+        return Response.ok().build();
+    }
 
     public Patient findPatient(long patientId) {
         return patientRepository.findOne(patientId);

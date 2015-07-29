@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import lk.ac.cmb.ucsc.mcs.ewa.entity.Doctor;
 import lk.ac.cmb.ucsc.mcs.ewa.entity.Speciality;
+import lk.ac.cmb.ucsc.mcs.ewa.exception.LoginException;
 import lk.ac.cmb.ucsc.mcs.ewa.repository.DoctorRepository;
 import lk.ac.cmb.ucsc.mcs.ewa.repository.SpecialityRepository;
 
@@ -22,6 +23,13 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Autowired
     private SpecialityRepository specialityRepository;
+
+    public void login(String username, String password) throws LoginException {
+        Doctor doctor = doctorRepository.findByUsername(username);
+        if (doctor == null || !password.equals(doctor.getPassword())) {
+            throw new LoginException("Invalid Credentials");
+        }
+    }
 
     public List<Doctor> getDoctors() {
         List<Doctor> doctors = new ArrayList<Doctor>();
