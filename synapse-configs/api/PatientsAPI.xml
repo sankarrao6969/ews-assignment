@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api xmlns="http://ws.apache.org/ns/synapse" name="PatientsAPI" context="/patients">
+    <resource methods="GET" uri-template="/history/{patientId}">
+        <!-- The inSequence handles the request flow -->
+        <inSequence>
+            <!-- Call the new system service to get Patient History using patient id -->
+            <call>
+                <endpoint>
+                    <http method="get" uri-template="http://localhost:8787/api/patients/history/{uri.var.patientId}" />
+                </endpoint>
+            </call>
+
+            <property name="JSON_ARRAY_OM" expression="//jsonArray" scope="operation" type="OM" />
+
+            <iterate expression="//jsonArray/jsonElement/channelId" preservePayload="false" sequential="true"
+                continueParent="true">
+                <target>
+                    <sequence>
+                        <property name="channelId" expression="//channelId" />
+                        <payloadFactory media-type="xml">
+                            <format>
+                                <ser:findChannelRecord xmlns:ser="http://service.ewa.mcs.ucsc.cmb.ac.lk/">
+                                    <channelId xmlns="">$1</channelId>
+                                </ser:findChannelRecord>
+                            </format>
+                            <args>
+                                <arg expression="$ctx:channelId" />
+                            </args>
+                        </payloadFactory>
+
+                        <header name="Action" value="" />
+                        <!-- Call the ChannelService to find a channel record -->
+                        <call>
+                            <endpoint>
+                                <address uri="http://localhost:8686/services/ChannelService" format="soap11" />
+                            </endpoint>
+                        </call>
+
+                        <payloadFactory>
+                            <format>
+                                <channelDetails xmlns="">$1</channelDetails>
+                            </format>
+                            <args>
+                                <arg expression="//ser:findChannelRecordResponse/node()" xmlns:ser="http://service.ewa.mcs.ucsc.cmb.ac.lk/" />
+                            </args>
+                        </payloadFactory>
+
+                        <enrich>
+                            <source type="body" />
+                            <target type="property" property="CHANNEL_RESPONSE" />
+                        </enrich>
+                        <log level="custom">
+                            <property name="CHANNEL ####################" expression="get-property('CHANNEL_RESPONSE')" />
+                        </log>
+
+                        <property name="JSON_ARRAY" expression="get-property('operation','JSON_ARRAY_OM')"
+                            type="OM" />
+
+                        <log level="custom">
+                            <property name="INITIAL******************" expression="get-property('JSON_ARRAY')" />
+                        </log>
+
+                        <enrich>
+                            <source type="property" clone="true" property="JSON_ARRAY" />
+                            <target action="replace" type="body" />
+                        </enrich>
+
+                        <enrich>
+                            <source clone="true" property="CHANNEL_RESPONSE" type="property" />
+                            <target action="replace"
+                                xpath="//jsonArray/jsonElement/channelId[text() = get-property('channelId')]" />
+                        </enrich>
+
+                        <log level="custom">
+                            <property name="BODY ####################" expression="//jsonArray" />
+                        </log>
+
+                        <property name="JSON_ARRAY_OM" expression="//jsonArray" scope="operation" type="OM" />
+                    </sequence>
+                </target>
+            </iterate>
+
+            <property name="FINAL" expression="get-property('operation','JSON_ARRAY_OM')" type="OM" />
+            <log level="custom">
+                <property name="FINAL ******************" expression="get-property('FINAL')" />
+            </log>
+            <enrich>
+                <source type="property" clone="true" property="FINAL" />
+                <target type="body" />
+            </enrich>
+
+
+            <log level="custom">
+                <property name="BODY FINAL ####################" expression="//jsonArray" />
+            </log>
+
+            <payloadFactory media-type="xml">
+                <format>
+                    <root>$1</root>
+                </format>
+                <args>
+                    <arg expression="get-property('FINAL')" />
+                </args>
+            </payloadFactory>
+
+            <!-- This API is not returning the full JSON with "ChannelDetails". Wasted more than 10 hours on this!! When 
+                I try payloadFactory with either "get-property('FINAL')" or "//jsonArray", I see the old response with "channelId" in it! 
+                It should have been replaced and the logs do not even show channelId! I have no idea how to fix this now!! -->
+
+            <log level="full" />
+            <property name="messageType" value="application/json" scope="axis2" type="STRING" />
+            <respond />
+
+        </inSequence>
+        <outSequence>
+        </outSequence>
+    </resource>
+</api>
