@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 public class Patient implements Serializable {
@@ -63,6 +64,7 @@ public class Patient implements Serializable {
         this.lastName = lastName;
     }
 
+    @XmlTransient
     public String getUsername() {
         return username;
     }
@@ -71,6 +73,7 @@ public class Patient implements Serializable {
         this.username = username;
     }
 
+    @XmlTransient
     public String getPassword() {
         return password;
     }

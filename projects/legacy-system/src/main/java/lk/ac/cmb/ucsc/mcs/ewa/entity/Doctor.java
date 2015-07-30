@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 public class Doctor implements Serializable {
@@ -69,6 +70,7 @@ public class Doctor implements Serializable {
         this.lastName = lastName;
     }
 
+    @XmlTransient
     public String getUsername() {
         return username;
     }
@@ -77,6 +79,7 @@ public class Doctor implements Serializable {
         this.username = username;
     }
 
+    @XmlTransient
     public String getPassword() {
         return password;
     }
