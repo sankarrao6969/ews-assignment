@@ -44,6 +44,6 @@ public interface ChannelService {
      * @return A Channel Record
      * @throws ChannelRecordNotFoundException if there is no channel record for the given id.
      */
-    ChannelRecord findChannelRecord(long channelId) throws ChannelRecordNotFoundException;
+    ChannelRecord findChannelRecord(@WebParam(name = "channelId") long channelId) throws ChannelRecordNotFoundException;
 
 }
