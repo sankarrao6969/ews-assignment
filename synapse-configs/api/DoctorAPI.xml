@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api xmlns="http://ws.apache.org/ns/synapse"
+     name="DoctorAPI"
+     context="/doctors">
+   <resource methods="GET">
+      <inSequence>
+         <header name="Action" value=""/>
+         <payloadFactory media-type="xml">
+            <format>
+               <ser:getDoctors xmlns:ser="http://service.ewa.mcs.ucsc.cmb.ac.lk/"/>
+            </format>
+            <args/>
+         </payloadFactory>
+         <send>
+            <endpoint>
+               <address uri="http://localhost:8686/services/DoctorService" format="soap11"/>
+            </endpoint>
+         </send>
+      </inSequence>
+      <outSequence>
+         <send/>
+      </outSequence>
+   </resource>
+</api>
